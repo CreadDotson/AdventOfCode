@@ -1,0 +1,51 @@
+use strict;
+use warnings;
+
+sub is_valid {
+	my $num = $_[0];
+	my $first_half = substr($num, 0, int(length($num) / 2));
+	my $second_half = substr($num, int(length($num) / 2));
+	# print "First half: $first_half\n";
+	# print "Second half: $second_half\n";
+	return $first_half ne $second_half;
+}
+
+sub check_for_valid_ids {
+	my $total = 0;
+	my $range = $_[0];
+	# print "Range is : $range\n";
+	my @start_end = split('-', $range);
+	# print "Start is $start_end[0]\n";
+	# print "End is $start_end[1]\n";
+	foreach my $val ($start_end[0] .. $start_end[1]){
+		if (not is_valid($val)){
+			$total += $val;	
+		}
+	}
+	return $total;
+}
+
+# my $range = "222220-222224";
+
+# my $total = check_for_valid_ids($range);
+# print "Total is : $total\n";
+# exit();
+
+my $filename = "input.txt";
+
+open(my $fh, "<", $filename) or die "Cannot open file '$filename': $!";
+
+while (my $line = <$fh>){
+	chomp $line;
+	# print "Read line: $line\n";
+	my @id_ranges = split(',', $line);
+	my $total = 0;
+	for my $i (0 .. $#id_ranges) {
+		$total += check_for_valid_ids(@id_ranges[$i]);
+	}
+	print "Total is: $total\n";
+}
+
+# is_valid("123234444");
+
+close($fh);
